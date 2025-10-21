@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>シンプルなカンバンボード</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>プロジェクト管理ボード</h1>
+      <p>カードをドラッグ＆ドロップして進捗を更新しましょう。</p>
+      <p class="storage-hint">このボードのカードはブラウザに自動保存されます。</p>
+    </header>
+
+    <main class="board" aria-label="カンバンボード">
+      <section class="column" data-status="todo" aria-labelledby="todo-heading">
+        <header class="column-header">
+          <h2 id="todo-heading">未着手</h2>
+          <button class="add-card" data-target="todo" type="button">＋カードを追加</button>
+        </header>
+        <div class="column-body" role="list"></div>
+      </section>
+
+      <section class="column" data-status="in-progress" aria-labelledby="in-progress-heading">
+        <header class="column-header">
+          <h2 id="in-progress-heading">進行中</h2>
+          <button class="add-card" data-target="in-progress" type="button">＋カードを追加</button>
+        </header>
+        <div class="column-body" role="list"></div>
+      </section>
+
+      <section class="column" data-status="done" aria-labelledby="done-heading">
+        <header class="column-header">
+          <h2 id="done-heading">完了</h2>
+          <button class="add-card" data-target="done" type="button">＋カードを追加</button>
+        </header>
+        <div class="column-body" role="list"></div>
+      </section>
+    </main>
+
+    <template id="card-template">
+      <article class="card" draggable="true" role="listitem">
+        <header class="card-header">
+          <h3 class="card-title"></h3>
+          <button class="delete-card" type="button" aria-label="カードを削除">×</button>
+        </header>
+        <p class="card-description"></p>
+      </article>
+    </template>
+
+    <div class="dialog-backdrop" hidden>
+      <form class="card-dialog" role="dialog" aria-modal="true">
+        <h2>カードを追加</h2>
+        <label class="field">
+          <span>タイトル</span>
+          <input name="title" required maxlength="80" />
+        </label>
+        <label class="field">
+          <span>詳細</span>
+          <textarea name="description" rows="4" maxlength="200"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button type="button" class="dialog-cancel">キャンセル</button>
+          <button type="submit" class="dialog-submit">追加</button>
+        </div>
+        <input type="hidden" name="status" />
+      </form>
+    </div>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>
