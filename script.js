@@ -84,6 +84,20 @@ const boardData = loadBoardData();
 
 const template = document.getElementById("card-template");
 const columns = document.querySelectorAll(".column");
+const knownStatuses = Array.from(columns, (column) => column.dataset.status);
+const defaultStatus = knownStatuses[0] ?? null;
+
+knownStatuses.forEach((status) => {
+  if (!Array.isArray(boardData[status])) {
+    boardData[status] = [];
+  }
+});
+
+Object.keys(boardData).forEach((status) => {
+  if (!knownStatuses.includes(status)) {
+    delete boardData[status];
+  }
+});
 const addButtons = document.querySelectorAll(".add-card");
 const dialogBackdrop = document.querySelector(".dialog-backdrop");
 const dialogForm = document.querySelector(".card-dialog");
@@ -181,7 +195,17 @@ function moveCard(cardId, targetStatus) {
 
   if (!cardData) return;
 
-  boardData[targetStatus].push(cardData);
+  const statusToUse = knownStatuses.includes(targetStatus)
+    ? targetStatus
+    : defaultStatus;
+
+  if (!statusToUse) return;
+
+  if (!Array.isArray(boardData[statusToUse])) {
+    boardData[statusToUse] = [];
+  }
+
+  boardData[statusToUse].push(cardData);
 
   notifyDataChange();
 }
@@ -195,7 +219,8 @@ function deleteCard(cardId) {
 
 function openDialog(status) {
   dialogBackdrop.hidden = false;
-  statusInput.value = status;
+  const resolvedStatus = knownStatuses.includes(status) ? status : defaultStatus;
+  statusInput.value = resolvedStatus ?? "";
   titleInput.value = "";
   descriptionInput.value = "";
   titleInput.focus();
@@ -219,9 +244,16 @@ dialogForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const title = titleInput.value.trim();
   const description = descriptionInput.value.trim();
-  const status = statusInput.value;
+  const statusCandidate = statusInput.value;
+  const status = knownStatuses.includes(statusCandidate)
+    ? statusCandidate
+    : defaultStatus;
 
-  if (!title) return;
+  if (!title || !status) return;
+
+  if (!Array.isArray(boardData[status])) {
+    boardData[status] = [];
+  }
 
   boardData[status].push({
     id: crypto.randomUUID(),
