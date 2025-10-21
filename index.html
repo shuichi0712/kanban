@@ -51,7 +51,10 @@
 
     <div class="dialog-backdrop" hidden>
       <form class="card-dialog" role="dialog" aria-modal="true">
-        <h2>カードを追加</h2>
+        <div class="dialog-header">
+          <h2>カードを追加</h2>
+          <button type="button" class="dialog-close" aria-label="ダイアログを閉じる">×</button>
+        </div>
         <label class="field">
           <span>タイトル</span>
           <input name="title" required maxlength="80" />

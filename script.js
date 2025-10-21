@@ -102,6 +102,7 @@ const addButtons = document.querySelectorAll(".add-card");
 const dialogBackdrop = document.querySelector(".dialog-backdrop");
 const dialogForm = document.querySelector(".card-dialog");
 const cancelDialogButton = dialogForm.querySelector(".dialog-cancel");
+const closeDialogButton = dialogForm.querySelector(".dialog-close");
 const submitDialogButton = dialogForm.querySelector(".dialog-submit");
 const titleInput = dialogForm.elements.namedItem("title");
 const descriptionInput = dialogForm.elements.namedItem("description");
@@ -237,6 +238,10 @@ dialogBackdrop.addEventListener("click", (event) => {
 });
 
 cancelDialogButton.addEventListener("click", () => {
+  closeDialog();
+});
+
+closeDialogButton.addEventListener("click", () => {
   closeDialog();
 });
 

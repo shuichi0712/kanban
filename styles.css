@@ -185,8 +185,33 @@ body {
   box-shadow: var(--shadow);
 }
 
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .card-dialog h2 {
   margin: 0;
+}
+
+.dialog-close {
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.dialog-close:hover,
+.dialog-close:focus-visible {
+  background: rgba(107, 114, 128, 0.14);
+  color: var(--text);
+  outline: none;
 }
 
 .field {
