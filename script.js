@@ -108,6 +108,9 @@ const titleInput = dialogForm.elements.namedItem("title");
 const descriptionInput = dialogForm.elements.namedItem("description");
 const statusInput = dialogForm.elements.namedItem("status");
 
+const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")
+  ?.matches;
+
 let draggedCardId = null;
 
 function notifyDataChange() {
@@ -220,6 +223,9 @@ function deleteCard(cardId) {
 
 function openDialog(status) {
   dialogBackdrop.hidden = false;
+  requestAnimationFrame(() => {
+    dialogBackdrop.classList.add("is-open");
+  });
   const resolvedStatus = knownStatuses.includes(status) ? status : defaultStatus;
   statusInput.value = resolvedStatus ?? "";
   titleInput.value = "";
@@ -228,7 +234,39 @@ function openDialog(status) {
 }
 
 function closeDialog() {
-  dialogBackdrop.hidden = true;
+  if (dialogBackdrop.hidden) {
+    return;
+  }
+
+  const finalizeClose = () => {
+    if (dialogBackdrop.classList.contains("is-open")) {
+      return;
+    }
+    dialogBackdrop.hidden = true;
+  };
+
+  if (prefersReducedMotion) {
+    dialogBackdrop.classList.remove("is-open");
+    finalizeClose();
+    return;
+  }
+
+  const fallbackTimeout = window.setTimeout(() => {
+    dialogBackdrop.removeEventListener("transitionend", handleTransitionEnd);
+    finalizeClose();
+  }, 300);
+
+  const handleTransitionEnd = (event) => {
+    if (event.target !== dialogBackdrop) {
+      return;
+    }
+    window.clearTimeout(fallbackTimeout);
+    dialogBackdrop.removeEventListener("transitionend", handleTransitionEnd);
+    finalizeClose();
+  };
+
+  dialogBackdrop.addEventListener("transitionend", handleTransitionEnd);
+  dialogBackdrop.classList.remove("is-open");
 }
 
 dialogBackdrop.addEventListener("click", (event) => {
@@ -243,6 +281,12 @@ cancelDialogButton.addEventListener("click", () => {
 
 closeDialogButton.addEventListener("click", () => {
   closeDialog();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !dialogBackdrop.hidden) {
+    closeDialog();
+  }
 });
 
 dialogForm.addEventListener("submit", (event) => {
